@@ -111,7 +111,9 @@ npm run test:mongodb
 
 #### Create Google Drive Folder:
 
-1. Go to [Google Drive](https://drive.google.com/)
+**⚠️ Important:** Create the folder in YOUR personal Google Drive (not the Service Account's Drive). Service Accounts cannot store files in their own Drive.
+
+1. Go to [Google Drive](https://drive.google.com/) with your personal Google account
 2. Create a new folder (e.g., "Resume Versions")
 3. Copy the folder ID from the URL:
    ```
@@ -119,8 +121,9 @@ npm run test:mongodb
    ```
 4. Share the folder with your service account email:
    - Right-click folder → Share
-   - Add service account email (from JSON file)
+   - Add service account email (from JSON file, e.g., `resume-manager@project.iam.gserviceaccount.com`)
    - Give "Editor" permission
+   - Click "Send" or "Done"
 
 ### 5. Configure Environment Variables
 
@@ -292,7 +295,27 @@ if (versions.length > 3) { // Change 3 to your desired number
 - Ensure IP is whitelisted in MongoDB Atlas
 - Run `npm run setup:mongodb` again
 
-### "Upload failed"
+### "Upload failed" / "Service Accounts do not have storage quota"
+
+**This error occurs when the folder is in the Service Account's Drive instead of a regular user's Drive.**
+
+**Solution:**
+1. **Create folder in YOUR Google Drive** (not Service Account's Drive):
+   - Go to [Google Drive](https://drive.google.com/) with your personal Google account
+   - Create a new folder (e.g., "Resume Versions")
+   - Copy the folder ID from the URL
+
+2. **Share folder with Service Account**:
+   - Right-click the folder → Share
+   - Add the Service Account email (from your JSON credentials file)
+   - Give "Editor" permission
+   - Click "Send" (or "Done")
+
+3. **Verify the folder ID**:
+   - Use the folder ID from YOUR Drive (not Service Account's Drive)
+   - Update `GOOGLE_DRIVE_FOLDER_ID` in your `.env` file
+
+**Important:** Service Accounts cannot store files in their own Drive. The folder must be in a regular user's Drive and shared with the Service Account.
 
 - Verify Google Drive credentials
 - Check service account has access to folder

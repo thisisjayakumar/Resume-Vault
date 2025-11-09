@@ -9,6 +9,8 @@ const rl = readline.createInterface({
 })
 
 console.log('🔐 Password Hash Generator\n')
+console.log('ℹ️  Note: bcrypt generates different hashes each time for security.')
+console.log('   This is NORMAL - any hash for the same password will work!\n')
 
 rl.question('Enter password to hash: ', async (password) => {
   if (!password) {
@@ -23,6 +25,8 @@ rl.question('Enter password to hash: ', async (password) => {
     console.log(hash)
     console.log('\n📋 Copy this hash to your .env file')
     console.log('Example: PASSWORD_HASH=' + hash)
+    console.log('\n💡 To verify this hash works with your password, run:')
+    console.log('   npm run verify:hash')
   } catch (error) {
     console.error('❌ Error generating hash:', error.message)
   }

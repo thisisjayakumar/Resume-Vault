@@ -11,6 +11,7 @@
     "setup:mongodb": "node scripts/setup-mongodb.js",
     "test:mongodb": "node scripts/test-mongodb.js",
     "setup:hash": "node scripts/generate-hash.js",
+    "verify:hash": "node scripts/verify-hash.js",
     "deploy": "netlify deploy --prod"
   },
   "dependencies": {

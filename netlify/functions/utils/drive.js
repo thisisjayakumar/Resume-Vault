@@ -8,7 +8,10 @@ function getDriveClient() {
       client_email: process.env.GOOGLE_CLIENT_EMAIL,
       private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
     },
-    scopes: ['https://www.googleapis.com/auth/drive.file'],
+    scopes: [
+      'https://www.googleapis.com/auth/drive.file',
+      'https://www.googleapis.com/auth/drive',
+    ],
   })
 
   return google.drive({ version: 'v3', auth })
@@ -22,9 +25,11 @@ async function listResumes() {
     q: `'${process.env.GOOGLE_DRIVE_FOLDER_ID}' in parents and trashed=false`,
     fields: 'files(id, name, createdTime, size)',
     orderBy: 'createdTime desc',
+    supportsAllDrives: true,
+    includeItemsFromAllDrives: true,
   })
 
-  return response.data.files
+  return response.data.files || []
 }
 
 // Download a resume file
@@ -32,7 +37,11 @@ async function downloadResume(fileId) {
   const drive = getDriveClient()
   
   const response = await drive.files.get(
-    { fileId, alt: 'media' },
+    { 
+      fileId, 
+      alt: 'media',
+      supportsAllDrives: true,
+    },
     { responseType: 'stream' }
   )
 
@@ -46,6 +55,7 @@ async function getFileMetadata(fileId) {
   const response = await drive.files.get({
     fileId,
     fields: 'id, name, createdTime, size, mimeType',
+    supportsAllDrives: true,
   })
 
   return response.data
@@ -69,6 +79,7 @@ async function uploadResume(fileBuffer, filename) {
       body: bufferStream,
     },
     fields: 'id, name, createdTime',
+    supportsAllDrives: true,
   })
 
   return response.data
@@ -78,7 +89,10 @@ async function uploadResume(fileBuffer, filename) {
 async function deleteResume(fileId) {
   const drive = getDriveClient()
   
-  await drive.files.delete({ fileId })
+  await drive.files.delete({ 
+    fileId,
+    supportsAllDrives: true,
+  })
 }
 
 // Generate version filename

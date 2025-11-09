@@ -2,17 +2,38 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-const PASSWORD_HASH = process.env.PASSWORD_HASH
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH
+// Trim whitespace from hashes to prevent issues with environment variable formatting
+const PASSWORD_HASH = process.env.PASSWORD_HASH ? process.env.PASSWORD_HASH.trim() : null
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH ? process.env.ADMIN_PASSWORD_HASH.trim() : null
 
 // Verify user password
 async function verifyPassword(password) {
-  return await bcrypt.compare(password, PASSWORD_HASH)
+  if (!password || !PASSWORD_HASH) {
+    console.error('Password verification failed: missing password or hash')
+    return false
+  }
+  
+  try {
+    return await bcrypt.compare(password, PASSWORD_HASH)
+  } catch (error) {
+    console.error('Password verification error:', error)
+    return false
+  }
 }
 
 // Verify admin password
 async function verifyAdminPassword(password) {
-  return await bcrypt.compare(password, ADMIN_PASSWORD_HASH)
+  if (!password || !ADMIN_PASSWORD_HASH) {
+    console.error('Admin password verification failed: missing password or hash')
+    return false
+  }
+  
+  try {
+    return await bcrypt.compare(password, ADMIN_PASSWORD_HASH)
+  } catch (error) {
+    console.error('Admin password verification error:', error)
+    return false
+  }
 }
 
 // Generate JWT token
