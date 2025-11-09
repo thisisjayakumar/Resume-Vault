@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-const { MongoClient } = require('mongodb')
-require('dotenv').config()
+import { MongoClient } from 'mongodb'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 async function testMongoDB() {
   console.log('🧪 Testing MongoDB Connection...\n')
@@ -16,10 +18,7 @@ async function testMongoDB() {
   try {
     // Connect
     console.log('1️⃣ Connecting to MongoDB...')
-    client = await MongoClient.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
+    client = await MongoClient.connect(process.env.MONGODB_URI)
     console.log('✅ Connected successfully\n')
 
     const db = client.db(process.env.MONGODB_DB_NAME || 'resume_manager')

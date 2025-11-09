@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
-const { MongoClient } = require('mongodb')
-require('dotenv').config()
+import { MongoClient } from 'mongodb'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 async function setupMongoDB() {
   console.log('🗄️  Setting up MongoDB collections and indexes...\n')
@@ -17,10 +19,7 @@ async function setupMongoDB() {
   try {
     // Connect to MongoDB
     console.log('Connecting to MongoDB...')
-    client = await MongoClient.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
+    client = await MongoClient.connect(process.env.MONGODB_URI)
 
     const db = client.db(process.env.MONGODB_DB_NAME || 'resume_manager')
     console.log('✓ Connected successfully\n')
@@ -41,7 +40,7 @@ async function setupMongoDB() {
       { 
         expireAfterSeconds: 3600, // 1 hour after lockExpiry
         name: 'lockExpiry_ttl',
-        partialFilterExpression: { lockExpiry: { $exists: true, $ne: null } }
+        partialFilterExpression: { lockExpiry: { $exists: true } }
       }
     )
     
