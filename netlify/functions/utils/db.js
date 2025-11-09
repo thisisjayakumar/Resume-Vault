@@ -11,7 +11,7 @@ async function connectToDatabase() {
 
   const client = await MongoClient.connect(process.env.MONGODB_URI)
 
-  const db = client.db(process.env.MONGODB_DB_NAME || 'resume_manager')
+  const db = client.db(process.env.MONGODB_DB_NAME || 'database')
 
   cachedClient = client
   cachedDb = db

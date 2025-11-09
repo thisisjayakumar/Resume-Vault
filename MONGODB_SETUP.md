@@ -65,7 +65,7 @@ Complete guide to setting up MongoDB Atlas for your Resume Version Manager.
 
 ```env
 MONGODB_URI=mongodb+srv://resume_admin:YOUR_PASSWORD@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
-MONGODB_DB_NAME=resume_manager
+MONGODB_DB_NAME=your-db-name
 ```
 
 ## 🔧 Initialize Database
@@ -88,7 +88,7 @@ npm run test:mongodb
 You should see:
 ```
 ✅ MongoDB setup complete!
-Database: resume_manager
+Database: your-db-name
 Collections: ip_attempts, metadata
 ```
 
@@ -96,7 +96,7 @@ Collections: ip_attempts, metadata
 
 Your MongoDB will have:
 
-### Database: `resume_manager`
+### Database: `your-db-name`
 
 #### Collection: `ip_attempts`
 ```json
@@ -155,7 +155,7 @@ When deploying to Netlify:
 3. Add:
    ```
    MONGODB_URI=mongodb+srv://...
-   MONGODB_DB_NAME=resume_manager
+   MONGODB_DB_NAME=your-db-name
    ```
 4. Deploy your site
 5. Check function logs to verify connection

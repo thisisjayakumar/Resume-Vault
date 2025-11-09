@@ -21,7 +21,7 @@ async function testMongoDB() {
     client = await MongoClient.connect(process.env.MONGODB_URI)
     console.log('✅ Connected successfully\n')
 
-    const db = client.db(process.env.MONGODB_DB_NAME || 'resume_manager')
+    const db = client.db(process.env.MONGODB_DB_NAME || 'database')
 
     // Test ip_attempts collection
     console.log('2️⃣ Testing ip_attempts collection...')

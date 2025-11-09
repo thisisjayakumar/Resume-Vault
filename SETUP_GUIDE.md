@@ -93,7 +93,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ```env
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
-MONGODB_DB_NAME=resume_manager
+MONGODB_DB_NAME=your-db-name
 GOOGLE_CLIENT_EMAIL=resume-manager-service@project.iam.gserviceaccount.com
 GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 GOOGLE_DRIVE_FOLDER_ID=1a2b3c4d5e6f7g8h9i

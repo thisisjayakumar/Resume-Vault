@@ -21,7 +21,7 @@ async function setupMongoDB() {
     console.log('Connecting to MongoDB...')
     client = await MongoClient.connect(process.env.MONGODB_URI)
 
-    const db = client.db(process.env.MONGODB_DB_NAME || 'resume_manager')
+    const db = client.db(process.env.MONGODB_DB_NAME || 'database')
     console.log('✓ Connected successfully\n')
 
     // Create ip_attempts collection with index

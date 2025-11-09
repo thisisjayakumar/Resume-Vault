@@ -135,7 +135,7 @@ Edit `.env` and fill in your values:
 ```env
 # MongoDB
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
-MONGODB_DB_NAME=resume_manager
+MONGODB_DB_NAME=your-db-name
 
 # Google Drive
 GOOGLE_CLIENT_EMAIL=your-service-account@project.iam.gserviceaccount.com

@@ -333,7 +333,7 @@ Uploads new resume (multipart/form-data)
 ```env
 # Database
 MONGODB_URI=                  # MongoDB connection string
-MONGODB_DB_NAME=             # Database name (default: resume_manager)
+MONGODB_DB_NAME=             # Database name (default: your-db-name)
 
 # Google Drive
 GOOGLE_CLIENT_EMAIL=          # Service account email

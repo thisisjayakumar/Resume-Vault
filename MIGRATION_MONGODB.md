@@ -12,7 +12,7 @@ This project has been migrated from FaunaDB to MongoDB Atlas due to FaunaDB's se
 ```diff
 - FAUNADB_SECRET=your_fauna_secret
 + MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
-+ MONGODB_DB_NAME=resume_manager
++ MONGODB_DB_NAME=your-db-name
 ```
 
 ### NPM Scripts
@@ -73,7 +73,7 @@ Edit your `.env` file:
 
 # Add new variables
 MONGODB_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
-MONGODB_DB_NAME=resume_manager
+MONGODB_DB_NAME=your-db-name
 ```
 
 #### Step 4: Initialize MongoDB
