@@ -9,7 +9,7 @@ A beautiful, secure web app where:
 - 🔐 Downloads are password-protected
 - 🛡️ Brute-force attacks are prevented (3 attempts per 24h)
 - 📦 Your resume is automatically versioned
-- ☁️ Everything is backed up to Google Drive
+- ☁️ Everything is backed up to Google Drive & MongoDB
 - 🚀 Hosted for free on Netlify
 
 ## 🎥 Visual Flow
@@ -52,10 +52,11 @@ cd netlify/functions && npm install && cd ../..
 
 ### 2️⃣ Setup Services
 
-**FaunaDB** (Database)
-1. Visit https://dashboard.fauna.com/
-2. Create database → Copy secret
-⏱️ *3 minutes*
+**MongoDB Atlas** (Database)
+1. Visit https://cloud.mongodb.com/
+2. Create free M0 cluster
+3. Get connection string
+⏱️ *5 minutes* | See `MONGODB_SETUP.md` for details
 
 **Google Drive** (Storage)
 1. Visit https://console.cloud.google.com/
@@ -304,7 +305,7 @@ After setup, you should be able to:
 
 ### Your Services
 - [Netlify Dashboard](https://app.netlify.com/) - Site hosting
-- [FaunaDB Dashboard](https://dashboard.fauna.com/) - Database
+- [MongoDB Atlas](https://cloud.mongodb.com/) - Database
 - [Google Cloud Console](https://console.cloud.google.com/) - API management
 - [Google Drive](https://drive.google.com/) - File storage
 

@@ -19,16 +19,16 @@ npm install
 cd netlify/functions && npm install && cd ../..
 ```
 
-### Step 2: FaunaDB Setup (5 minutes)
+### Step 2: MongoDB Atlas Setup (5 minutes)
 
-1. Go to https://dashboard.fauna.com/
-2. Click "Create Database"
-3. Name it "resume-manager"
-4. Click "Create"
-5. Go to "Security" → "New Key"
-6. Select "Server" role
-7. Copy the secret key
-8. Save it for the .env file
+1. Go to https://www.mongodb.com/cloud/atlas/register
+2. Create free M0 cluster
+3. Create database user with password
+4. Configure Network Access (Allow from Anywhere: 0.0.0.0/0)
+5. Get connection string
+6. Replace `<password>` in connection string
+
+**📖 Detailed Guide**: See `MONGODB_SETUP.md` for step-by-step instructions
 
 ### Step 3: Google Drive Setup (10 minutes)
 
@@ -92,7 +92,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 4. Edit `.env` file with all values:
 
 ```env
-FAUNADB_SECRET=fnAE...your_secret
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
+MONGODB_DB_NAME=resume_manager
 GOOGLE_CLIENT_EMAIL=resume-manager-service@project.iam.gserviceaccount.com
 GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 GOOGLE_DRIVE_FOLDER_ID=1a2b3c4d5e6f7g8h9i
@@ -104,12 +105,17 @@ JWT_SECRET=abc123...your_jwt_secret
 ### Step 5: Initialize Database (2 minutes)
 
 ```bash
-node scripts/setup-fauna.js
+npm run setup:mongodb
 ```
 
 You should see:
 ```
-✅ FaunaDB setup complete!
+✅ MongoDB setup complete!
+```
+
+Test connection:
+```bash
+npm run test:mongodb
 ```
 
 ### Step 6: Test Locally (3 minutes)
@@ -199,10 +205,11 @@ rm -rf node_modules
 npm install
 ```
 
-### FaunaDB connection failed
-- Double-check FAUNADB_SECRET
-- Ensure no extra spaces in .env
-- Run setup-fauna.js again
+### MongoDB connection failed
+- Double-check MONGODB_URI and password
+- Ensure IP is whitelisted (0.0.0.0/0)
+- Check Network Access in MongoDB Atlas
+- Run setup-mongodb.js again
 
 ### Google Drive "403 Forbidden"
 - Verify service account has folder access
@@ -219,7 +226,7 @@ npm install
 1. **Save your passwords**: Store them in a password manager
 2. **Backup .env**: Keep it secure, don't commit it
 3. **Test uploads**: Try different PDF sizes
-4. **Monitor usage**: Check Netlify/FaunaDB dashboards
+4. **Monitor usage**: Check Netlify/MongoDB Atlas dashboards
 5. **Update regularly**: Keep dependencies updated
 
 ## 📞 Need Help?

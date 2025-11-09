@@ -5,7 +5,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
-    "faunadb": "^4.8.0",
+    "mongodb": "^6.3.0",
     "googleapis": "^131.0.0",
     "dotenv": "^16.3.1",
     "node-fetch": "^2.7.0",

@@ -26,7 +26,7 @@ A modern, secure, and beautifully designed web application for managing and dist
 - **Netlify Functions** - Serverless backend
 - **Node.js** - Runtime environment
 - **Google Drive API** - File storage
-- **FaunaDB** - Database for tracking
+- **MongoDB Atlas** - Database for tracking
 
 ### Security
 - **bcryptjs** - Password hashing
@@ -40,7 +40,7 @@ Before you begin, ensure you have:
 - Node.js 18+ installed
 - A Netlify account (free tier works)
 - A Google Cloud account
-- A FaunaDB account (free tier works)
+- A MongoDB Atlas account (free tier works)
 - Git installed
 
 ## 🚀 Setup Instructions
@@ -64,19 +64,24 @@ npm install
 cd ../..
 ```
 
-### 3. Set Up FaunaDB
+### 3. Set Up MongoDB Atlas
 
-1. Go to [FaunaDB Dashboard](https://dashboard.fauna.com/)
-2. Create a new database (e.g., "resume-manager")
-3. Go to Security → New Key
-4. Create a key with "Server" role
-5. Copy the secret key
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)
+2. Create a free M0 cluster
+3. Create database user with password
+4. Whitelist all IPs (0.0.0.0/0) for Netlify
+5. Get connection string
+
+**Detailed instructions**: See `MONGODB_SETUP.md`
 
 Run the setup script:
 
 ```bash
 # Create .env file first (see step 5)
-node scripts/setup-fauna.js
+npm run setup:mongodb
+
+# Test connection
+npm run test:mongodb
 ```
 
 ### 4. Set Up Google Drive API
@@ -128,8 +133,9 @@ cp .env.example .env
 Edit `.env` and fill in your values:
 
 ```env
-# FaunaDB
-FAUNADB_SECRET=your_fauna_secret
+# MongoDB
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
+MONGODB_DB_NAME=resume_manager
 
 # Google Drive
 GOOGLE_CLIENT_EMAIL=your-service-account@project.iam.gserviceaccount.com
@@ -281,9 +287,10 @@ if (versions.length > 3) { // Change 3 to your desired number
 
 ### "Failed to load versions"
 
-- Check FaunaDB connection
-- Verify FAUNADB_SECRET in environment variables
-- Run `node scripts/setup-fauna.js` again
+- Check MongoDB connection
+- Verify MONGODB_URI in environment variables
+- Ensure IP is whitelisted in MongoDB Atlas
+- Run `npm run setup:mongodb` again
 
 ### "Upload failed"
 
@@ -295,7 +302,7 @@ if (versions.length > 3) { // Change 3 to your desired number
 
 - Check password hash is correct
 - Verify file exists in Google Drive
-- Check FaunaDB connection
+- Check MongoDB connection
 
 ### 3D Effects Not Loading
 
@@ -325,7 +332,7 @@ MIT License - feel free to use this for your own resume management needs!
 
 - React Three Fiber for amazing 3D capabilities
 - Netlify for seamless deployment
-- FaunaDB for reliable database
+- MongoDB Atlas for reliable database
 - Google Drive for file storage
 
 ## 📞 Support

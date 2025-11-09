@@ -12,7 +12,7 @@ A production-ready, secure web application for managing and distributing persona
 - **Anti-Brute Force**: Automatic 24-hour lockout after failed attempts
 - **Secure Delivery**: Files served through backend, no direct links exposed
 - **JWT Authentication**: Secure session management for admin
-- **IP Tracking**: FaunaDB-powered attempt tracking
+- **IP Tracking**: MongoDB-powered attempt tracking
 
 ### 📦 Automatic Version Management
 - **Smart Naming**: `Resume_YYYY-MM-DD_vX.X.pdf` format
@@ -63,7 +63,7 @@ React 18
 Netlify Functions (Serverless)
 ├── Node.js Runtime
 ├── Google Drive API (Storage)
-├── FaunaDB (Database)
+├── MongoDB Atlas (Database)
 ├── bcryptjs (Password Hashing)
 └── JWT (Authentication)
 ```
@@ -332,7 +332,8 @@ Uploads new resume (multipart/form-data)
 ### Environment Variables
 ```env
 # Database
-FAUNADB_SECRET=               # FaunaDB secret key
+MONGODB_URI=                  # MongoDB connection string
+MONGODB_DB_NAME=             # Database name (default: resume_manager)
 
 # Google Drive
 GOOGLE_CLIENT_EMAIL=          # Service account email
@@ -442,10 +443,11 @@ JWT_SECRET=                 # JWT signing secret
 - 300 build minutes/month
 - 125K function invocations/month
 
-**FaunaDB** (Free)
-- 100K read operations/day
-- 50K write operations/day
-- 500 MB storage
+**MongoDB Atlas** (Free M0)
+- 512 MB storage
+- Shared RAM/CPU
+- 100 concurrent connections
+- No time limit
 
 **Google Drive** (Free)
 - 15 GB storage
@@ -456,10 +458,10 @@ JWT_SECRET=                 # JWT signing secret
 
 ### Paid Tier (If Needed)
 - Netlify Pro: $19/month
-- FaunaDB Pay-as-you-go: ~$2-5/month
+- MongoDB M2: $9/month (2GB storage, backups)
 - Google Workspace: $6/month (100 GB)
 
-**Total if scaled**: ~$27-30/month
+**Total if scaled**: ~$34/month
 
 ## 🎓 Learning Resources
 
@@ -469,7 +471,8 @@ JWT_SECRET=                 # JWT signing secret
 - [Three.js Manual](https://threejs.org/manual/)
 - [Tailwind CSS Docs](https://tailwindcss.com/docs)
 - [Netlify Functions](https://docs.netlify.com/functions/overview/)
-- [FaunaDB Docs](https://docs.fauna.com/)
+- [MongoDB Atlas Docs](https://www.mongodb.com/docs/atlas/)
+- [MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/)
 - [Google Drive API](https://developers.google.com/drive)
 
 ## 🤝 Contributing

@@ -27,8 +27,11 @@ npm install && cd netlify/functions && npm install && cd ../..
 # Generate password hash
 npm run setup:hash
 
-# Setup FaunaDB collections
-npm run setup:fauna
+# Setup MongoDB collections
+npm run setup:mongodb
+
+# Test MongoDB connection
+npm run test:mongodb
 ```
 
 ### Deployment
@@ -70,7 +73,8 @@ netlify env:import .env
 ## 📋 Environment Variables Checklist
 
 ```env
-✓ FAUNADB_SECRET
+✓ MONGODB_URI
+✓ MONGODB_DB_NAME
 ✓ GOOGLE_CLIENT_EMAIL
 ✓ GOOGLE_PRIVATE_KEY
 ✓ GOOGLE_DRIVE_FOLDER_ID
@@ -87,7 +91,7 @@ netlify env:import .env
 
 ### Dashboards
 - Netlify: https://app.netlify.com/
-- FaunaDB: https://dashboard.fauna.com/
+- MongoDB Atlas: https://cloud.mongodb.com/
 - Google Cloud: https://console.cloud.google.com/
 - Google Drive: https://drive.google.com/
 
@@ -109,13 +113,18 @@ rm -rf node_modules
 npm install
 ```
 
-### "FaunaDB connection failed"
+### "MongoDB connection failed"
 ```bash
 # Check .env file
-cat .env | grep FAUNADB
+cat .env | grep MONGODB
+
+# Test connection
+npm run test:mongodb
 
 # Re-run setup
-npm run setup:fauna
+npm run setup:mongodb
+
+# Verify IP whitelisted in MongoDB Atlas
 ```
 
 ### "Build failed"
@@ -181,7 +190,7 @@ netlify functions:log
 - [ ] HTTPS enabled on production
 - [ ] Security headers configured
 - [ ] Google Drive folder shared only with service account
-- [ ] FaunaDB secret kept secure
+- [ ] MongoDB connection string kept secure
 
 ## 🎨 Customization Quick Guide
 
@@ -274,7 +283,7 @@ npm run deploy
 
 - [ ] All dependencies installed
 - [ ] Environment variables configured
-- [ ] FaunaDB setup complete
+- [ ] MongoDB Atlas setup complete
 - [ ] Google Drive configured
 - [ ] Passwords hashed
 - [ ] Tested locally

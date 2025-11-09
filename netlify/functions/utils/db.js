@@ -1,47 +1,65 @@
-const faunadb = require('faunadb')
+const { MongoClient } = require('mongodb')
 
-const q = faunadb.query
-const client = new faunadb.Client({
-  secret: process.env.FAUNADB_SECRET,
-  domain: 'db.fauna.com',
-  scheme: 'https',
-})
+let cachedClient = null
+let cachedDb = null
+
+// Get MongoDB client and database
+async function connectToDatabase() {
+  if (cachedClient && cachedDb) {
+    return { client: cachedClient, db: cachedDb }
+  }
+
+  const client = await MongoClient.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+
+  const db = client.db(process.env.MONGODB_DB_NAME || 'resume_manager')
+
+  cachedClient = client
+  cachedDb = db
+
+  return { client, db }
+}
 
 // Get IP attempt data
 async function getIPAttempts(ip) {
   try {
-    const result = await client.query(
-      q.Get(q.Match(q.Index('attempts_by_ip'), ip))
-    )
-    return result.data
+    const { db } = await connectToDatabase()
+    const collection = db.collection('ip_attempts')
+    
+    const result = await collection.findOne({ ip })
+    return result
   } catch (error) {
-    if (error.name === 'NotFound') {
-      return null
-    }
-    throw error
+    console.error('Error getting IP attempts:', error)
+    return null
   }
 }
 
 // Create or update IP attempt data
 async function updateIPAttempts(ip, data) {
   try {
-    const existing = await client.query(
-      q.Get(q.Match(q.Index('attempts_by_ip'), ip))
+    const { db } = await connectToDatabase()
+    const collection = db.collection('ip_attempts')
+    
+    const result = await collection.findOneAndUpdate(
+      { ip },
+      { 
+        $set: { 
+          ip,
+          ...data,
+          updatedAt: new Date()
+        } 
+      },
+      { 
+        upsert: true,
+        returnDocument: 'after'
+      }
     )
     
-    // Update existing record
-    return await client.query(
-      q.Update(existing.ref, { data })
-    )
+    return result.value || result
   } catch (error) {
-    if (error.name === 'NotFound') {
-      // Create new record
-      return await client.query(
-        q.Create(q.Collection('ip_attempts'), {
-          data: { ip, ...data }
-        })
-      )
-    }
+    console.error('Error updating IP attempts:', error)
     throw error
   }
 }
@@ -59,47 +77,81 @@ async function resetIPAttempts(ip) {
 // Get resume versions metadata
 async function getVersionsMetadata() {
   try {
-    const result = await client.query(
-      q.Get(q.Match(q.Index('metadata_by_key'), 'versions'))
-    )
-    return result.data.value || []
+    const { db } = await connectToDatabase()
+    const collection = db.collection('metadata')
+    
+    const result = await collection.findOne({ key: 'versions' })
+    return result?.value || []
   } catch (error) {
-    if (error.name === 'NotFound') {
-      return []
-    }
-    throw error
+    console.error('Error getting versions metadata:', error)
+    return []
   }
 }
 
 // Update resume versions metadata
 async function updateVersionsMetadata(versions) {
   try {
-    const existing = await client.query(
-      q.Get(q.Match(q.Index('metadata_by_key'), 'versions'))
+    const { db } = await connectToDatabase()
+    const collection = db.collection('metadata')
+    
+    const result = await collection.findOneAndUpdate(
+      { key: 'versions' },
+      { 
+        $set: { 
+          key: 'versions',
+          value: versions,
+          updatedAt: new Date()
+        } 
+      },
+      { 
+        upsert: true,
+        returnDocument: 'after'
+      }
     )
     
-    return await client.query(
-      q.Update(existing.ref, {
-        data: { key: 'versions', value: versions }
-      })
-    )
+    return result.value || result
   } catch (error) {
-    if (error.name === 'NotFound') {
-      return await client.query(
-        q.Create(q.Collection('metadata'), {
-          data: { key: 'versions', value: versions }
-        })
-      )
-    }
+    console.error('Error updating versions metadata:', error)
+    throw error
+  }
+}
+
+// Clean up old locked IPs (optional maintenance function)
+async function cleanupOldLocks() {
+  try {
+    const { db } = await connectToDatabase()
+    const collection = db.collection('ip_attempts')
+    
+    const now = Date.now()
+    
+    // Remove locks that have expired
+    const result = await collection.updateMany(
+      { 
+        locked: true,
+        lockExpiry: { $lt: now }
+      },
+      {
+        $set: {
+          locked: false,
+          lockExpiry: null,
+          attempts: 0
+        }
+      }
+    )
+    
+    return result
+  } catch (error) {
+    console.error('Error cleaning up old locks:', error)
     throw error
   }
 }
 
 module.exports = {
+  connectToDatabase,
   getIPAttempts,
   updateIPAttempts,
   resetIPAttempts,
   getVersionsMetadata,
-  updateVersionsMetadata
+  updateVersionsMetadata,
+  cleanupOldLocks
 }
-
