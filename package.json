@@ -38,5 +38,18 @@
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
     "vite": "^7.2.2"
-  }
+  },
+  "description": "A modern, secure, and beautifully designed web application for managing and distributing your resume with version control, password protection, and anti-brute-force security.",
+  "main": "postcss.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thisisjayakumar/Resume-Vault.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thisisjayakumar/Resume-Vault/issues"
+  },
+  "homepage": "https://github.com/thisisjayakumar/Resume-Vault#readme"
 }
