@@ -29,3 +29,6 @@
   for = "/.netlify/functions/*"
   [headers.values]
     Cache-Control = "no-store"
+
+[[plugins]]
+package = "@netlify/plugin-functions-install-core"
