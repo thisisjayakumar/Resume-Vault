@@ -43,3 +43,8 @@ netlify/functions/node_modules
 credentials.json
 token.json
 
+# Coding-agent skills (installed locally via skills CLI)
+.agents/
+.claude/skills/
+.cursor/skills/
+
