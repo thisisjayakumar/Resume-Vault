@@ -32,3 +32,6 @@
 
 [[plugins]]
 package = "@netlify/plugin-functions-install-core"
+
+[dev]
+  targetPort = 3000
