@@ -117,7 +117,8 @@ export const handler = async (event: Event): Promise<Result> => {
       }),
     }
   } catch (error) {
-    log('error', 'upload error', { requestId: rid })
-    return { statusCode: 500, headers, body: JSON.stringify(errorBody('Upload failed', rid)) }
+    const err = error as Error
+    log('error', 'upload error', { requestId: rid, message: err?.message, stack: err?.stack })
+    return { statusCode: 500, headers, body: JSON.stringify(errorBody(`Upload failed: ${err?.message || 'unknown error'}`, rid)) }
   }
 }
