@@ -113,12 +113,7 @@ export const handler = async (event: Event): Promise<Result> => {
       fileName = latest.name
     }
 
-    const fileStream = await downloadResume(fileId)
-    const chunks: Buffer[] = []
-    for await (const chunk of fileStream) {
-      chunks.push(Buffer.from(chunk))
-    }
-    const fileBuffer = Buffer.concat(chunks)
+    const fileBuffer = await downloadResume(fileId)
 
     return {
       statusCode: 200,

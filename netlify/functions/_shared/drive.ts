@@ -1,16 +1,9 @@
-import { google } from 'googleapis'
-import stream from 'stream'
-import { getEnv } from './env'
+import { getStore } from '@netlify/blobs'
 
-function getDriveClient() {
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: getEnv().GOOGLE_CLIENT_EMAIL,
-      private_key: getEnv().GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive'],
-  })
-  return google.drive({ version: 'v3', auth })
+const STORE_NAME = 'resumes'
+
+function store() {
+  return getStore(STORE_NAME)
 }
 
 export interface DriveFile {
@@ -22,54 +15,36 @@ export interface DriveFile {
 }
 
 export async function listResumes(): Promise<DriveFile[]> {
-  const drive = getDriveClient()
-  const response = await drive.files.list({
-    q: `'${getEnv().GOOGLE_DRIVE_FOLDER_ID}' in parents and trashed=false`,
-    fields: 'files(id, name, createdTime, size)',
-    orderBy: 'createdTime desc',
-    supportsAllDrives: true,
-    includeItemsFromAllDrives: true,
-  })
-  return (response.data.files as DriveFile[]) || []
+  const s = store()
+  const { blobs } = await s.list()
+  return blobs.map((b) => ({
+    id: b.key,
+    name: b.key,
+    createdTime: b.lastModified ? new Date(b.lastModified).toISOString() : new Date().toISOString(),
+  }))
 }
 
-export async function downloadResume(fileId: string): Promise<NodeJS.ReadableStream> {
-  const drive = getDriveClient()
-  const response = await drive.files.get({ fileId, alt: 'media', supportsAllDrives: true }, { responseType: 'stream' })
-  return response.data as NodeJS.ReadableStream
+export async function downloadResume(fileId: string): Promise<Buffer> {
+  const s = store()
+  const data = await s.get(fileId, { type: 'arrayBuffer' })
+  if (!data) throw new Error('File not found')
+  return Buffer.from(data)
 }
 
 export async function getFileMetadata(fileId: string): Promise<DriveFile> {
-  const drive = getDriveClient()
-  const response = await drive.files.get({
-    fileId,
-    fields: 'id, name, createdTime, size, mimeType',
-    supportsAllDrives: true,
-  })
-  return response.data as DriveFile
+  return { id: fileId, name: fileId, createdTime: new Date().toISOString() }
 }
 
 export async function uploadResume(fileBuffer: Buffer, filename: string): Promise<DriveFile> {
-  const drive = getDriveClient()
-  const bufferStream = new stream.PassThrough()
-  bufferStream.end(fileBuffer)
-
-  const response = await drive.files.create({
-    requestBody: {
-      name: filename,
-      parents: [getEnv().GOOGLE_DRIVE_FOLDER_ID],
-      mimeType: 'application/pdf',
-    },
-    media: { mimeType: 'application/pdf', body: bufferStream },
-    fields: 'id, name, createdTime',
-    supportsAllDrives: true,
-  })
-  return response.data as DriveFile
+  const s = store()
+  const key = filename
+  await s.set(key, fileBuffer, { metadata: { mimeType: 'application/pdf' } })
+  return { id: key, name: key, createdTime: new Date().toISOString() }
 }
 
 export async function deleteResume(fileId: string): Promise<void> {
-  const drive = getDriveClient()
-  await drive.files.delete({ fileId, supportsAllDrives: true })
+  const s = store()
+  await s.delete(fileId)
 }
 
 export function generateVersionFilename(): string {
