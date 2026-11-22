@@ -3,7 +3,9 @@ import { getStore } from '@netlify/blobs'
 const STORE_NAME = 'resumes'
 
 function store() {
-  return getStore(STORE_NAME)
+  const siteID = process.env.NETLIFY_SITE_ID || '1730880d-a202-4792-b969-0a120ef52188'
+  const token = process.env.NETLIFY_AUTH_TOKEN || process.env.NETLIFY_API_TOKEN
+  return getStore({ name: STORE_NAME, siteID, token })
 }
 
 export interface DriveFile {
